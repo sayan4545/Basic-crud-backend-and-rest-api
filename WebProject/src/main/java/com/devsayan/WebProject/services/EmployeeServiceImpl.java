@@ -3,10 +3,10 @@ package com.devsayan.WebProject.services;
 import com.devsayan.WebProject.dtos.EmployeeDTO;
 import com.devsayan.WebProject.entities.EmployeeEntity;
 import com.devsayan.WebProject.repositories.EmployeeRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,10 +37,11 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
+    @Transactional
     public EmployeeDTO updateEmployeeById(EmployeeDTO employeeDTO, Long id) {
-        EmployeeEntity employeeEntity = employeeRepository.findById(id).orElse(null);
-        employeeDTO.setId(id);
-        modelMapper.map(employeeDTO,employeeEntity);
+        EmployeeEntity employeeEntity = modelMapper.map(employeeDTO,EmployeeEntity.class);
+        //employeeEntity.setId(id);
+        //modelMapper.map(employeeDTO,employeeEntity);
         EmployeeEntity savedEmployee = employeeRepository.save(employeeEntity);
         return modelMapper.map(savedEmployee,EmployeeDTO.class);
     }
