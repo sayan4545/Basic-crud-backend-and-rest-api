@@ -6,8 +6,12 @@ import com.devsayan.WebProject.repositories.EmployeeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
@@ -55,4 +59,20 @@ public class EmployeeServiceImpl implements EmployeeService{
         }
         return false;
     }
+
+    @Override
+    public EmployeeDTO updatePartialEmployeeById(Map<String, Object> updates, Long id) {
+        boolean exists = employeeRepository.existsById(id);
+        if(!exists) return null;
+        EmployeeEntity employeeEntity = employeeRepository.findById(id).get();
+        updates.forEach((fields,value)->{
+            Field field = ReflectionUtils.findRequiredField(EmployeeEntity.class,fields);
+            field.setAccessible(true);
+            ReflectionUtils.setField(field,employeeEntity,value);
+
+        });
+        employeeRepository.save(employeeEntity);
+        return modelMapper.map(employeeEntity,EmployeeDTO.class);
+    }
+
 }
