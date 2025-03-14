@@ -2,7 +2,9 @@ package com.devsayan.WebProject.controllers;
 
 import com.devsayan.WebProject.dtos.EmployeeDTO;
 import com.devsayan.WebProject.services.EmployeeServiceImpl;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +25,9 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeService.getAll(), HttpStatusCode.valueOf(200));
     }
     @PostMapping("/post")
-    public ResponseEntity<EmployeeDTO> saveEmployeeDto(@RequestBody EmployeeDTO inputEmployeeDTO){
+    public ResponseEntity<EmployeeDTO> saveEmployeeDto(@RequestBody @Valid EmployeeDTO inputEmployeeDTO){
         employeeService.createEmployee(inputEmployeeDTO);
-        return new ResponseEntity<>(inputEmployeeDTO, HttpStatus.CREATED);
+        return ResponseEntity.ok(inputEmployeeDTO);
     }
     @GetMapping("/getById/{id}")
     public ResponseEntity<EmployeeDTO> findByID(@PathVariable Long id){
