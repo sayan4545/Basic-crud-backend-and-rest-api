@@ -18,6 +18,16 @@ public class EmployeeDTO {
 
     @Max(value = 80,message = "cant be greater than 80")
     private int age;
+    @Pattern(regexp = "^(ADMIN|USER)$")
+    @NotBlank(message = "Role cannot be blank")
+    private String role;//Admin and USer
+
+    @PastOrPresent(message = "The date of joining can be a date of past, or the present date")
     private LocalDate doj;
+
+    @NotNull(message = "Salary cannot be null")
+    @Positive(message = "Salary is always positive")
+    @Digits(integer = 7,fraction = 3)
+    private Double salary;
     private boolean isActive;
 }

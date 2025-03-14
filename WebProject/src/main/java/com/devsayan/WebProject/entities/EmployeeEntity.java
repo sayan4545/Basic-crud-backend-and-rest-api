@@ -22,6 +22,8 @@ public class EmployeeEntity {
     private String name;
     private int age;
     private LocalDate doj;
+    private String role;
+    private Double salary;
     private boolean isActive;
 
 
