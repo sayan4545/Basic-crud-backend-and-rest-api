@@ -1,6 +1,7 @@
 package com.devsayan.WebProject.controllers;
 
 import com.devsayan.WebProject.dtos.EmployeeDTO;
+import com.devsayan.WebProject.exceptions.ResourceNotFoundException;
 import com.devsayan.WebProject.services.EmployeeServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class EmployeeController {
         Optional<EmployeeDTO> employeeDTO = employeeService.findEmployeeById(id);
         return employeeDTO.
                 map(employeeDTO1 -> ResponseEntity.ok(employeeDTO1))
-                .orElseThrow(()->new NoSuchElementException("Employee not found"));
+                .orElseThrow(()->new ResourceNotFoundException("Employee not found with id : "+id));
 
     }
 

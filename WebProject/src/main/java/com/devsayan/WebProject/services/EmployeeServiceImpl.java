@@ -74,5 +74,4 @@ public class EmployeeServiceImpl implements EmployeeService{
         employeeRepository.save(employeeEntity);
         return modelMapper.map(employeeEntity,EmployeeDTO.class);
     }
-
 }

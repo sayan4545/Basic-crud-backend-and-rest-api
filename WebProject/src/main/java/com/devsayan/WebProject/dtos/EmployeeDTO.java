@@ -1,5 +1,6 @@
 package com.devsayan.WebProject.dtos;
 
+import com.devsayan.WebProject.annotation.EmployeeRoleValidation;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -18,7 +19,8 @@ public class EmployeeDTO {
 
     @Max(value = 80,message = "cant be greater than 80")
     private int age;
-    @Pattern(regexp = "^(ADMIN|USER)$")
+    //@Pattern(regexp = "^(ADMIN|USER)$")
+    @EmployeeRoleValidation
     @NotBlank(message = "Role cannot be blank")
     private String role;//Admin and USer
 
