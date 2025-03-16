@@ -2,6 +2,7 @@ package com.devsayan.WebProject.services;
 
 import com.devsayan.WebProject.dtos.EmployeeDTO;
 import com.devsayan.WebProject.entities.EmployeeEntity;
+import com.devsayan.WebProject.exceptions.ResourceNotFoundException;
 import com.devsayan.WebProject.repositories.EmployeeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,10 @@ import java.util.stream.Collectors;
 public class EmployeeServiceImpl implements EmployeeService{
     private final EmployeeRepository employeeRepository;
     private final ModelMapper modelMapper;
+
+    private boolean isExistsById(Long id){
+        return employeeRepository.existsById(id);
+    }
     @Override
     public List<EmployeeDTO> getAll() {
         return employeeRepository.findAll()
@@ -40,15 +45,27 @@ public class EmployeeServiceImpl implements EmployeeService{
         return modelMapper.map(employee, Optional.class);
     }
 
+//    @Override
+//    //@Transactional
+//    public EmployeeDTO updateEmployeeById(EmployeeDTO employeeDTO, Long id) {
+//        boolean exists = isExistsById(id);
+//        if(!exists) throw new ResourceNotFoundException("Employee not found with id "+id);
+//        EmployeeEntity employeeEntity = modelMapper.map(employeeDTO,EmployeeEntity.class);
+//        //employeeEntity.setId(id);
+//        //modelMapper.map(employeeDTO,employeeEntity);
+//
+//        EmployeeEntity savedEmployee = employeeRepository.save(employeeEntity);
+//        return modelMapper.map(savedEmployee,EmployeeDTO.class);
+//    }
     @Override
-    @Transactional
     public EmployeeDTO updateEmployeeById(EmployeeDTO employeeDTO, Long id) {
-        EmployeeEntity employeeEntity = modelMapper.map(employeeDTO,EmployeeEntity.class);
-        //employeeEntity.setId(id);
-        //modelMapper.map(employeeDTO,employeeEntity);
-        EmployeeEntity savedEmployee = employeeRepository.save(employeeEntity);
-        return modelMapper.map(savedEmployee,EmployeeDTO.class);
+        EmployeeEntity existingEntity = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id " + id));
+        modelMapper.map(employeeDTO, existingEntity);
+        EmployeeEntity savedEmployee = employeeRepository.save(existingEntity);
+        return modelMapper.map(savedEmployee, EmployeeDTO.class);
     }
+
 
     @Override
     public boolean deleteById(Long id) {
@@ -63,7 +80,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Override
     public EmployeeDTO updatePartialEmployeeById(Map<String, Object> updates, Long id) {
         boolean exists = employeeRepository.existsById(id);
-        if(!exists) return null;
+        if(!exists) throw new ResourceNotFoundException("Not found with id "+ id);
         EmployeeEntity employeeEntity = employeeRepository.findById(id).get();
         updates.forEach((fields,value)->{
             Field field = ReflectionUtils.findRequiredField(EmployeeEntity.class,fields);

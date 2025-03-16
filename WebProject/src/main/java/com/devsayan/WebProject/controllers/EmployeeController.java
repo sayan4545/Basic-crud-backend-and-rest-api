@@ -41,7 +41,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/put/{id}")
-    public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody EmployeeDTO employeeDTO,
+    public ResponseEntity<EmployeeDTO> updateEmployee(@RequestBody @Valid EmployeeDTO employeeDTO,
                                       @PathVariable Long id){
         employeeService.updateEmployeeById(employeeDTO,id);
         return new ResponseEntity<>(employeeDTO,HttpStatus.OK);
@@ -59,7 +59,7 @@ public class EmployeeController {
     }
     @PatchMapping("/patch/{id}")
     public ResponseEntity<EmployeeDTO> updatePartialEmployeeById(@RequestBody
-                                                 Map<String,Object> updates,
+                                                 @Valid Map<String,Object> updates,
                                                  @PathVariable Long id){
         EmployeeDTO updatedEmployee = employeeService.updatePartialEmployeeById(updates,id);
         return ResponseEntity.ok(updatedEmployee);
